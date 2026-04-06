@@ -1,13 +1,13 @@
 class DecksController < ApplicationController
   def start
-    return redirect_to decks_path if Deck.exists?
+    return redirect_to decks_path if owned_decks.exists?
 
     redirect_to new_deck_path
   end
 
   def index
     @query = params[:q].to_s.strip
-    base_scope = Deck.includes(:flashcards).order(updated_at: :desc)
+    base_scope = owned_decks.includes(:flashcards).order(updated_at: :desc)
 
     if @query.present?
       like_query = "%#{@query}%"
@@ -26,24 +26,24 @@ class DecksController < ApplicationController
   end
 
   def new
-    @has_decks = Deck.table_exists? && Deck.exists?
+    @has_decks = owned_decks.exists?
     @relative_time_label = "Last created"
     @relative_time_empty = "No decks created yet"
-    @relative_time_timestamp = Deck.maximum(:created_at) if @has_decks
+    @relative_time_timestamp = owned_decks.maximum(:created_at) if @has_decks
     @deck = Deck.new
     @deck.flashcards.build(position: 0)
   end
 
   def edit
-    @has_decks = Deck.table_exists? && Deck.exists?
-    @deck = Deck.includes(:flashcards).find(params[:id])
+    @has_decks = owned_decks.exists?
+    @deck = owned_decks.includes(:flashcards).find(params[:id])
     set_edit_relative_time
     @deck.flashcards.build(position: 0) if @deck.flashcards.empty?
     render :new
   end
 
   def practice
-    @deck = Deck.includes(:flashcards).find(params[:id])
+    @deck = owned_decks.includes(:flashcards).find(params[:id])
   end
 
   def create
@@ -51,7 +51,7 @@ class DecksController < ApplicationController
       return handle_import
     end
 
-    @deck = Deck.new(deck_params)
+    @deck = owned_decks.new(deck_params)
     normalize_flashcard_positions
 
     if @deck.save
@@ -61,10 +61,10 @@ class DecksController < ApplicationController
       flash[:saved] = true
       redirect_to new_deck_path
     else
-      @has_decks = Deck.table_exists? && Deck.exists?
+      @has_decks = owned_decks.exists?
       @relative_time_label = "Last created"
       @relative_time_empty = "No decks created yet"
-      @relative_time_timestamp = Deck.maximum(:created_at) if @has_decks
+      @relative_time_timestamp = owned_decks.maximum(:created_at) if @has_decks
       @deck.flashcards.build(position: @deck.flashcards.length) if @deck.flashcards.empty?
       render :new, status: :unprocessable_entity
     end
@@ -75,8 +75,8 @@ class DecksController < ApplicationController
       return handle_import
     end
 
-    @deck = Deck.includes(:flashcards).find(params[:id])
-    @has_decks = Deck.table_exists? && Deck.exists?
+    @deck = owned_decks.includes(:flashcards).find(params[:id])
+    @has_decks = owned_decks.exists?
     set_edit_relative_time
 
     @deck.assign_attributes(deck_params)
@@ -96,7 +96,7 @@ class DecksController < ApplicationController
   end
 
   def destroy
-    deck = Deck.find(params[:id])
+    deck = owned_decks.find(params[:id])
     deck.destroy
 
     redirect_to decks_path
@@ -151,10 +151,10 @@ class DecksController < ApplicationController
   rescue JSON::ParserError, ArgumentError, ActiveRecord::RecordInvalid
     @deck = Deck.new
     @deck.flashcards.build(position: 0)
-    @has_decks = Deck.table_exists? && Deck.exists?
+    @has_decks = owned_decks.exists?
     @relative_time_label = "Last created"
     @relative_time_empty = "No decks created yet"
-    @relative_time_timestamp = Deck.maximum(:created_at) if @has_decks
+    @relative_time_timestamp = owned_decks.maximum(:created_at) if @has_decks
     render :new, status: :unprocessable_entity
   end
 
@@ -165,7 +165,7 @@ class DecksController < ApplicationController
 
     created = []
     duplicate_skipped = 0
-    existing_titles = Deck.pluck(:title).map { |title| normalize_import_title(title) }
+    existing_titles = owned_decks.pluck(:title).map { |title| normalize_import_title(title) }
     imported_titles = []
 
     Deck.transaction do
@@ -196,7 +196,7 @@ class DecksController < ApplicationController
 
         raise ArgumentError, "Wrong template format" if filtered_flashcards.empty?
 
-        deck = Deck.new(
+        deck = owned_decks.new(
           title: title,
           description: deck_data["description"].to_s.strip
         )
@@ -220,5 +220,9 @@ class DecksController < ApplicationController
 
   def normalize_import_title(title)
     title.to_s.strip.downcase
+  end
+
+  def owned_decks
+    Deck.where(owner_token: current_owner_token)
   end
 end
