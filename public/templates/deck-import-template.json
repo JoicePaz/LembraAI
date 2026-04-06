@@ -1,0 +1,36 @@
+{
+  "decks": [
+    {
+      "title": "Biology Basics",
+      "description": "Cell and genetics review",
+      "flashcards": [
+        {
+          "term": "Cell membrane",
+          "definition": "Controls what enters and leaves the cell."
+        },
+        {
+          "term": "Mitosis",
+          "definition": "Process that creates two identical daughter cells."
+        },
+        {
+          "term": "DNA",
+          "definition": "Stores genetic information."
+        }
+      ]
+    },
+    {
+      "title": "Astronomy 101",
+      "description": "Solar system essentials",
+      "flashcards": [
+        {
+          "term": "Sun",
+          "definition": "The star at the center of the Solar System."
+        },
+        {
+          "term": "Earth",
+          "definition": "The third planet from the Sun."
+        }
+      ]
+    }
+  ]
+}
