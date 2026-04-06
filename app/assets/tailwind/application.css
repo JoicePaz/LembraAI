@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #fd6400;
+  --color-surface: #f7fdff;
+  --color-heading: #1f2937;
+  --color-body: #6b7280;
+  --color-default-medium: #d1d5db;
+  --color-neutral-secondary-medium: #f3f4f6;
+  --radius-base: 0.75rem;
+}
+
+@layer utilities {
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+.flashcard-3d-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.75s cubic-bezier(0.34, 1.35, 0.64, 1);
+}
+
+.flashcard-3d-inner[data-flipped="true"] {
+  transform: rotateY(180deg);
+}
+
+@keyframes flashcardSwapNext {
+  0% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(-14px) rotate(-1deg);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes flashcardSwapPrev {
+  0% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(14px) rotate(1deg);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.flashcard-swap-next {
+  animation: flashcardSwapNext 0.24s ease-out;
+}
+
+.flashcard-swap-prev {
+  animation: flashcardSwapPrev 0.24s ease-out;
+}
+
+@keyframes flashcardSwapNextCard {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  45% {
+    transform: translateX(-18px) translateY(-2px) rotate(-1.2deg);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+@keyframes flashcardSwapPrevCard {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  45% {
+    transform: translateX(18px) translateY(-2px) rotate(1.2deg);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+@keyframes flashcardTap {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-2px) scale(1.01);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.flashcard-swap-next-card {
+  animation: flashcardSwapNextCard 0.32s ease-out;
+}
+
+.flashcard-swap-prev-card {
+  animation: flashcardSwapPrevCard 0.32s ease-out;
+}
+
+.flashcard-tap {
+  animation: flashcardTap 0.22s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flashcard-3d-inner {
+    transition-duration: 0.15s;
+    transition-timing-function: ease-out;
+  }
+
+  .flashcard-swap-next,
+  .flashcard-swap-prev,
+  .flashcard-swap-next-card,
+  .flashcard-swap-prev-card,
+  .flashcard-tap {
+    animation-duration: 0.12s;
+  }
+}

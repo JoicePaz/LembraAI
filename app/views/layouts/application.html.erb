@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>LembraAI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#fd6400">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="LembraAI">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body class="app-layout-body min-h-screen bg-surface text-slate-900 antialiased">
+    <main class="app-layout-main">
+      <%= yield %>
+    </main>
+    <footer
+      class="app-layout-footer w-full border-t border-brand/20 bg-[#fff7f1]/95"
+      style="height: 68px; box-shadow: 0 -4px 12px rgba(253, 100, 0, 0.08); display: flex; align-items: center; justify-content: center;"
+    >
+      <div class="app-layout-footer-content mx-auto flex items-center justify-center gap-2 px-4 text-center text-xs text-slate-700 sm:gap-3 sm:px-6 lg:px-8">
+        <span>Joice Paz</span>
+        <span aria-hidden="true">•</span>
+        <a href="mailto:joice.paz@avalara.com" class="text-brand hover:underline">
+          joice.paz@avalara.com
+        </a>
+        <span aria-hidden="true">•</span>
+        <span>Made with love 🖤</span>
+      </div>
+    </footer>
+  </body>
+</html>

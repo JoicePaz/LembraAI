@@ -1,0 +1,129 @@
+/*
+ *= require_tree .
+ *= require_self
+ */
+
+/* Compatibility tokens for copied doc snippets. */
+.text-heading {
+  color: #1f2937;
+}
+
+.text-body {
+  color: #6b7280;
+}
+
+.bg-neutral-secondary-medium {
+  background-color: #f3f4f6;
+}
+
+.border-default-medium {
+  border-color: #d1d5db;
+}
+
+.rounded-base {
+  border-radius: 0.75rem;
+}
+
+.shadow-xs {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.placeholder\:text-body::placeholder {
+  color: #6b7280;
+}
+
+.focus\:border-brand:focus {
+  border-color: #fd6400;
+}
+
+.focus\:ring-brand:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(253, 100, 0, 0.28);
+}
+
+/* Strong gray hover utility independent from Tailwind rebuilds. */
+.ui-hover-gray-dark {
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.ui-hover-gray-dark:hover {
+  background-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.ui-hover-gray-dark:disabled,
+.ui-hover-gray-dark:disabled:hover {
+  background-color: #e2e8f0;
+  color: #475569;
+  cursor: not-allowed;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  transform: none;
+}
+
+/* Gray CTA interaction without Tailwind build dependency. */
+.ui-gray-cta {
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ui-gray-cta:hover {
+  background-color: #cbd5e1;
+  color: #0f172a;
+}
+
+@keyframes uiSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.app-layout-body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-layout-main {
+  flex: 1 0 auto;
+}
+
+.app-layout-footer {
+  flex: 0 0 68px;
+  height: 68px !important;
+  min-height: 68px !important;
+  max-height: 68px !important;
+  overflow: hidden;
+}
+
+.app-layout-footer-content {
+  height: 68px;
+  max-height: 68px;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+@media (min-width: 1024px) {
+  .deck-form-header {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .deck-form-actions {
+    margin-left: 1.5rem;
+    width: auto;
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .deck-form-action-button {
+    width: auto;
+  }
+}
+

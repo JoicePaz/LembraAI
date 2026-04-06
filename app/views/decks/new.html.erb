@@ -1,0 +1,225 @@
+<%= render "shared/landing_header" %>
+<% editing = @deck.persisted? %>
+
+<div class="bg-gradient-to-b from-surface via-white to-surface">
+  <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20" data-controller="flashcards-builder" data-action="input->flashcards-builder#syncClearState">
+    <%= form_with model: @deck, class: "relative w-full", data: { flashcards_builder_target: "form" } do |f| %>
+      <div class="min-h-[520px] w-full rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-surface to-white p-6 shadow-xl shadow-slate-200/50 sm:p-8">
+        <div class="deck-form-header flex flex-col gap-4">
+          <h1 class="min-w-0 text-2xl font-bold tracking-tight text-slate-900 sm:text-4xl"><%= editing ? "Edit the flashcard set" : "Create a new flashcard set" %></h1>
+          <div class="deck-form-actions flex w-full flex-col items-stretch gap-3">
+            <% if @has_decks %>
+              <div class="flex items-center gap-3">
+                <% if flash[:saved] %>
+                  <span
+                    class="text-sm font-semibold text-brand transition-opacity duration-300"
+                    data-controller="transient-badge"
+                    data-transient-badge-timeout-value="3000"
+                  >
+                    Saved
+                  </span>
+                <% end %>
+                <%= link_to "See decks",
+                    decks_path,
+                    class: "text-sm font-medium text-slate-500 underline underline-offset-4 transition hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 rounded" %>
+              </div>
+            <% end %>
+            <button type="submit" name="commit_action" value="<%= editing ? "update" : "create" %>"
+              data-action="click->flashcards-builder#submitWithDelay"
+              data-loading-label="Saving..."
+              class="deck-form-action-button inline-flex w-full items-center justify-center rounded-2xl bg-brand/10 px-8 py-4 text-base font-semibold text-brand shadow-md shadow-brand/10 transition hover:-translate-y-0.5 hover:bg-brand/15 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+            >
+              <%= editing ? "Update" : "Create" %>
+            </button>
+            <button type="submit" name="commit_action" value="practice"
+              class="deck-form-action-button inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-[#ff7f2a] px-8 py-4 text-base font-semibold text-white shadow-lg shadow-brand/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(253,100,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2">
+              <%= editing ? "Update and practice" : "Create and practice" %>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-8 flex items-center gap-3">
+          <span
+            class="inline-flex cursor-pointer items-center rounded-full border border-brand/30 bg-brand/10 py-1 ps-2 pe-5 text-sm font-medium text-brand gap-1.5 transition-colors duration-200 hover:bg-brand/20"
+          >
+            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/90">
+              <svg class="h-3.5 w-3.5 text-brand" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3.75A8.25 8.25 0 1 0 12 20.25a8.25 8.25 0 0 0 0-16.5Zm0 0c2.1 2.3 3.25 5.12 3.25 8.25S14.1 17.95 12 20.25m0-16.5c-2.1 2.3-3.25 5.12-3.25 8.25S9.9 17.95 12 20.25m-7.25-8.25h14.5" />
+              </svg>
+            </span>
+            Public
+          </span>
+          <span
+            class="text-xs font-medium text-slate-400"
+            data-controller="relative-time"
+            data-relative-time-label-value="<%= @relative_time_label %>"
+            data-relative-time-empty-message-value="<%= @relative_time_empty %>"
+            data-relative-time-timestamp-value="<%= @relative_time_timestamp&.iso8601 %>"
+          >
+            <%= @relative_time_timestamp.present? ? "#{@relative_time_label} 1 min ago" : @relative_time_empty %>
+          </span>
+        </div>
+
+
+
+        <% if @deck.errors.any? %>
+          <div class="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <p class="font-semibold">Please fix the following errors:</p>
+            <ul class="mt-2 list-disc ps-5">
+              <% @deck.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="mt-8 flex flex-col gap-4">
+          <div>
+            <label for="deck_title" class="block mb-2.5 text-sm font-medium text-heading">Title</label>
+            <%= f.text_field :title, id: "deck_title", maxlength: 80, required: true, class: "bg-neutral-secondary-medium border border-default-medium text-heading text-base rounded-base focus:ring-brand focus:border-brand block w-full pe-3.5 ps-5 py-3 shadow-xs placeholder:text-body", placeholder: "", data: { flashcards_builder_target: "trackedInput titleInput" } %>
+          </div>
+
+          <div>
+            <label for="deck_description" class="block mb-2.5 text-sm font-medium text-heading">Add a description</label>
+            <%= f.text_field :description, id: "deck_description", maxlength: 500, class: "bg-neutral-secondary-medium border border-default-medium text-heading text-base rounded-base focus:ring-brand focus:border-brand block w-full pe-3.5 ps-5 py-3 shadow-xs placeholder:text-body", placeholder: "", data: { flashcards_builder_target: "trackedInput descriptionInput" } %>
+          </div>
+        </div>
+
+        <div class="mt-10 flex items-center justify-between">
+          <button
+            type="button"
+            data-action="click->flashcards-builder#openImport"
+            class="ui-hover-gray-dark inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-300 bg-slate-200 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
+          >
+            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/70">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.4" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5" />
+              </svg>
+            </span>
+            Import
+          </button>
+          <input
+            type="file"
+            accept=".json,application/json"
+            data-flashcards-builder-target="importInput"
+            data-action="change->flashcards-builder#handleImport"
+            style="display:none;"
+          >
+          <input type="hidden" name="import_payload" data-flashcards-builder-target="importPayload">
+
+          <button
+            type="button"
+            aria-label="Clear fields"
+            data-action="click->flashcards-builder#requestClear"
+            data-flashcards-builder-target="clearButton"
+            disabled
+            class="ui-hover-gray-dark inline-flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-xl border border-slate-300 bg-slate-200 text-slate-600 shadow-sm opacity-50 transition-all duration-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-4.992" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.985 19.644v-4.992h4.992" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.287 14.7a8.25 8.25 0 0 0 13.86 3.567l2.868-2.868M19.713 9.3a8.25 8.25 0 0 0-13.86-3.567L2.985 8.601" />
+            </svg>
+          </button>
+        </div>
+        <div class="mt-2 flex items-center gap-3 text-xs">
+          <a href="/templates/deck-import-template.json" download class="text-slate-500 underline underline-offset-2 transition hover:text-slate-700">JSON template</a>
+          <% if flash[:imported] %>
+            <span
+              class="font-semibold text-brand transition-opacity duration-300"
+              data-controller="transient-badge"
+              data-transient-badge-timeout-value="3000"
+            >
+              Imported successfully
+            </span>
+          <% end %>
+          <span data-flashcards-builder-target="importStatus" class="font-semibold text-brand transition-opacity duration-300" style="display:none;"></span>
+        </div>
+
+        <div class="mt-8 space-y-4" data-flashcards-builder-target="cards">
+          <% @deck.flashcards.each_with_index do |flashcard, index| %>
+            <%= render "decks/flashcard_item", number: index + 1, index: index, flashcard: flashcard, require_pair: index.zero? %>
+          <% end %>
+        </div>
+
+        <template data-flashcards-builder-target="template">
+          <%= render "decks/flashcard_item", number: "__NUMBER__", index: "__INDEX__", flashcard: nil, require_pair: false %>
+        </template>
+
+        <button type="submit" name="commit_action" value="import" formnovalidate data-flashcards-builder-target="importSubmit" style="display:none;"></button>
+
+        <div
+          aria-hidden="true"
+          data-flashcards-builder-target="importOverlay"
+          style="position: fixed; inset: 0; z-index: 95; display: none; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6);"
+        >
+          <div style="display:flex; flex-direction:column; align-items:center; gap:0.9rem; color:#fff;">
+            <svg style="width: 92px; height: 92px; animation: uiSpin 0.9s linear infinite;" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.25" stroke-width="2"></circle>
+              <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path>
+            </svg>
+            <p style="font-size: 1rem; font-weight: 600;">Importing...</p>
+          </div>
+        </div>
+
+        <div
+          aria-hidden="true"
+          style="position: fixed; inset: 0; z-index: 90; display: none; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.45); padding: 1rem;"
+          data-flashcards-builder-target="confirmModal"
+          data-action="click->flashcards-builder#cancelClear"
+        >
+          <div style="position: relative; width: 100%; max-width: 440px; max-height: calc(100vh - 2rem); padding: 0.75rem;" data-action="click->flashcards-builder#ignoreModalClick">
+            <div style="position: relative; background: #ffffff; border: 1px solid #d1d5db; border-radius: 0.75rem; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.24); padding: 1rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #d1d5db; padding-bottom: 0.75rem;">
+              <h2 style="font-size: 1rem; line-height: 1.4; font-weight: 600; color: #1f2937;">Clear all fields?</h2>
+              <button
+                type="button"
+                aria-label="Close modal"
+                data-action="click->flashcards-builder#cancelClear"
+                style="display: inline-flex; height: 2.25rem; width: 2.25rem; align-items: center; justify-content: center; border: 0; border-radius: 0.75rem; background: transparent; color: #64748b; cursor: pointer;"
+              >
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M18 18 6 6" />
+                </svg>
+              </button>
+              </div>
+
+            <div style="padding-top: 1rem; padding-bottom: 1rem;">
+              <p style="font-size: 0.9rem; line-height: 1.5; color: #6b7280;">
+                This will remove all text from title, description and flashcards.
+              </p>
+            </div>
+
+              <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid #d1d5db; padding-top: 0.75rem;">
+              <button
+                type="button"
+                data-action="click->flashcards-builder#cancelClear"
+                style="display: inline-flex; align-items: center; justify-content: center; border-radius: 0.75rem; border: 1px solid #d1d5db; background: #f3f4f6; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 500; color: #374151; cursor: pointer;"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                data-action="click->flashcards-builder#confirmClear"
+                style="display: inline-flex; align-items: center; justify-content: center; border-radius: 0.75rem; border: 1px solid transparent; background: #fd6400; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600; color: #ffffff; cursor: pointer;"
+              >
+                Clear
+              </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="mt-10 flex justify-center">
+      <button
+        type="button"
+        data-action="click->flashcards-builder#add"
+        class="ui-gray-cta inline-flex items-center justify-center rounded-2xl bg-slate-300 px-8 py-4 text-base font-semibold text-slate-800 shadow-md shadow-slate-400/40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
+      >
+        Add a card
+      </button>
+    </div>
+  </section>
+</div>

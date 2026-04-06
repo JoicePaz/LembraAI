@@ -1,0 +1,50 @@
+<div
+  data-controller="pwa-install-banner"
+  data-pwa-install-banner-target="banner"
+  style="display: none;"
+  class="mx-auto mt-4 max-w-6xl px-4 sm:px-6 lg:px-8"
+>
+  <div class="rounded-2xl border border-brand/20 bg-[#fff7f1] px-4 py-3 text-slate-800 shadow-sm sm:px-5">
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        <p class="text-sm font-semibold text-slate-900">Install LembraAI on your phone</p>
+
+        <p
+          data-pwa-install-banner-target="iosHint"
+          style="display: none;"
+          class="mt-1 text-sm text-slate-700"
+        >
+          iPhone: open Safari, tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.
+        </p>
+
+        <div
+          data-pwa-install-banner-target="androidHint"
+          style="display: none;"
+          class="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-700"
+        >
+          <span>Android: open in Chrome and tap <strong>Install app</strong> or <strong>Add to Home screen</strong>.</span>
+          <button
+            type="button"
+            data-pwa-install-banner-target="installButton"
+            data-action="click->pwa-install-banner#install"
+            style="display: none;"
+            class="inline-flex items-center justify-center rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#e95c00] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+          >
+            Install app
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        aria-label="Dismiss install banner"
+        data-action="click->pwa-install-banner#dismiss"
+        class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+      >
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M4.22 4.22a.75.75 0 0 1 1.06 0L10 8.94l4.72-4.72a.75.75 0 1 1 1.06 1.06L11.06 10l4.72 4.72a.75.75 0 1 1-1.06 1.06L10 11.06l-4.72 4.72a.75.75 0 0 1-1.06-1.06L8.94 10 4.22 5.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

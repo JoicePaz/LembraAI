@@ -1,0 +1,84 @@
+<%# locals: (front_text:, back_text:, cards: nil, show_stack: true, show_controls: true, wrapper_class: nil, card_id: nil) %>
+<% show_stack = true if show_stack.nil? %>
+<% show_controls = true if show_controls.nil? %>
+<% cid = card_id.presence || "flashcard-#{SecureRandom.hex(4)}" %>
+<% cards = Array(cards).presence || [{ front: front_text, back: back_text }] %>
+<% has_multiple_cards = cards.length > 1 %>
+<div class="<%= ["relative", wrapper_class].compact.join(" ") %>">
+  <% if show_stack %>
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div class="absolute left-3 right-3 top-8 h-[min(100%,220px)] min-h-[200px] -rotate-6 rounded-2xl border border-slate-200/80 bg-white shadow-md sm:left-5 sm:right-5 sm:top-10 sm:min-h-[240px]"></div>
+      <div class="absolute left-1 right-1 top-4 h-[min(100%,220px)] min-h-[200px] rotate-3 rounded-2xl border border-slate-200/80 bg-white shadow-md sm:left-2 sm:right-2 sm:top-5 sm:min-h-[240px]"></div>
+    </div>
+  <% end %>
+  <div
+    class="flashcard-perspective relative z-10 pt-0 sm:pt-1"
+    style="perspective: 1400px;"
+    data-controller="flashcard-flip"
+    data-flashcard-flip-cards-value="<%= cards.to_json %>"
+  >
+    <button
+      id="<%= cid %>"
+      type="button"
+      class="group/card relative w-full cursor-pointer rounded-2xl text-left outline-none transition-transform duration-300 ease-out hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+      style="touch-action: pan-y;"
+      data-action="click->flashcard-flip#toggle"
+      data-flashcard-flip-target="button"
+      aria-pressed="false"
+      aria-label="Flip card to show answer"
+    >
+      <div
+        class="flashcard-3d-inner relative h-[220px] w-full min-h-[200px] sm:h-[260px] sm:min-h-[240px]"
+        data-flashcard-flip-target="inner"
+        data-flipped="false"
+      >
+          <div
+            class="flashcard-face backface-hidden absolute inset-0 flex flex-col justify-center overflow-hidden rounded-2xl border border-slate-200/90 border-t-4 border-t-brand bg-white p-6 shadow-lg transition-[background-color,box-shadow,border-color] duration-300 group-hover/card:border-brand/35 group-hover/card:bg-gradient-to-br group-hover/card:from-brand/[0.07] group-hover/card:to-surface group-hover/card:shadow-xl group-hover/card:shadow-brand/20"
+          >
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 transition-colors duration-300 group-hover/card:text-brand">Front</span>
+            <p data-role="front-text" class="mt-3 text-pretty text-lg font-semibold leading-snug text-slate-900 transition-all duration-300 group-hover/card:font-extrabold group-hover/card:tracking-tight group-hover/card:text-brand sm:text-xl">
+              <%= front_text %>
+            </p>
+            <span class="mt-auto pt-6 text-xs font-medium text-slate-400 opacity-80 transition-colors group-hover/card:text-brand/80">Tap to reveal</span>
+          </div>
+          <div
+            class="flashcard-face backface-hidden absolute inset-0 flex flex-col justify-center overflow-hidden rounded-2xl border border-slate-200/90 border-t-4 border-t-brand bg-white p-6 shadow-lg transition-[background-color,box-shadow,border-color] duration-300 group-hover/card:border-brand/40 group-hover/card:bg-gradient-to-br group-hover/card:from-surface group-hover/card:to-brand/[0.06] group-hover/card:shadow-xl group-hover/card:shadow-brand/15"
+            style="transform: rotateY(180deg)"
+          >
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 transition-colors duration-300 group-hover/card:text-brand">Back</span>
+            <p data-role="back-text" class="mt-3 text-pretty text-base font-medium leading-relaxed text-slate-800 transition-all duration-300 group-hover/card:text-lg group-hover/card:font-semibold group-hover/card:text-slate-900 sm:text-lg">
+              <%= back_text %>
+            </p>
+            <span class="mt-auto pt-6 text-xs font-medium text-slate-400 transition-colors group-hover/card:text-brand/80">Tap for next card</span>
+          </div>
+      </div>
+    </button>
+    <% if show_controls && has_multiple_cards %>
+      <div class="mt-8 flex items-center justify-center gap-3 px-1 pb-1 sm:mt-9">
+        <button
+          type="button"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-brand/40 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+          data-action="click->flashcard-flip#prev"
+          aria-label="Show previous card"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
+        <p data-flashcard-flip-target="counter" class="min-w-[110px] text-center text-xs font-semibold tracking-wide text-brand">
+          Card 1 of <%= cards.length %>
+        </p>
+        <button
+          type="button"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-brand/40 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+          data-action="click->flashcard-flip#next"
+          aria-label="Show next card"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+    <% end %>
+  </div>
+</div>

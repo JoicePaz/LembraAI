@@ -1,0 +1,50 @@
+<% flashcard ||= nil %>
+<% require_pair = local_assigns.fetch(:require_pair, false) %>
+<div class="min-h-[170px] rounded-2xl bg-white p-4 pb-8 shadow-sm sm:min-h-[190px] sm:p-5 sm:pb-10" data-flashcards-builder-target="card">
+  <div class="mb-4 flex items-center justify-between">
+    <span class="text-xl font-semibold text-slate-700" data-role="card-number"><%= number %></span>
+    <button
+      type="button"
+      aria-label="Delete card"
+      data-action="click->flashcards-builder#remove"
+      class="inline-flex h-8 w-8 items-center justify-center text-slate-400 transition-colors duration-200 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
+    >
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 6.75h18M9.75 6.75V5.25A1.5 1.5 0 0 1 11.25 3.75h1.5a1.5 1.5 0 0 1 1.5 1.5v1.5m-8.25 0V18A2.25 2.25 0 0 0 8.25 20.25h7.5A2.25 2.25 0 0 0 18 18V6.75M10.5 10.5v6m3-6v6" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="grid gap-4" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);">
+    <div>
+      <% if flashcard&.id.present? %>
+        <input type="hidden" name="deck[flashcards_attributes][<%= index %>][id]" value="<%= flashcard.id %>">
+      <% end %>
+      <input type="hidden" name="deck[flashcards_attributes][<%= index %>][position]" value="<%= number.to_i - 1 %>" data-role="card-position">
+      <input
+        type="text"
+        name="deck[flashcards_attributes][<%= index %>][term]"
+        value="<%= flashcard&.term %>"
+        placeholder="Enter term"
+        data-flashcards-builder-target="trackedInput"
+        data-role="term-input"
+        <%= "required" if require_pair %>
+        class="block w-full rounded-base border border-default-medium bg-neutral-secondary-medium px-4 py-3 text-sm text-heading placeholder:text-body focus:border-brand focus:ring-brand"
+      >
+    </div>
+
+    <div>
+      <input
+        type="text"
+        name="deck[flashcards_attributes][<%= index %>][definition]"
+        value="<%= flashcard&.definition %>"
+        placeholder="Enter definition"
+        data-flashcards-builder-target="trackedInput"
+        data-role="definition-input"
+        <%= "required" if require_pair %>
+        class="block w-full rounded-base border border-default-medium bg-neutral-secondary-medium px-4 py-3 text-sm text-heading placeholder:text-body focus:border-brand focus:ring-brand"
+      >
+    </div>
+
+  </div>
+</div>

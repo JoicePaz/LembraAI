@@ -1,0 +1,34 @@
+<%= render "shared/landing_header" %>
+
+<div class="bg-gradient-to-b from-surface via-white to-surface">
+  <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
+    <div class="w-full rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-surface to-white p-6 shadow-xl shadow-slate-200/50 sm:p-8">
+      <header class="text-center">
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl"><%= @deck.title %></h1>
+        <p class="mt-1 text-sm font-medium text-slate-500"><%= @deck.flashcards.length %> cards</p>
+      </header>
+
+      <div class="mx-auto mt-8 max-w-3xl sm:mt-9">
+        <% if @deck.flashcards.any? %>
+          <%= render "shared/flashcard_flip",
+              front_text: @deck.flashcards.first.term,
+              back_text: @deck.flashcards.first.definition,
+              cards: @deck.flashcards.map { |card| { front: card.term, back: card.definition } },
+              show_stack: false,
+              show_controls: true,
+              card_id: "practice-flashcard-#{@deck.id}" %>
+        <% else %>
+          <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500">
+            This deck has no flashcards yet.
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <%= link_to "See decks",
+          decks_path,
+          class: "ui-gray-cta inline-flex items-center justify-center rounded-2xl bg-slate-300 px-8 py-4 text-base font-semibold text-slate-800 shadow-md shadow-slate-400/40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2" %>
+    </div>
+  </section>
+</div>
